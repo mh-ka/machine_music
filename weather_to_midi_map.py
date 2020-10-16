@@ -1,18 +1,15 @@
 import mido
 import time
-import requests
+import json
 from datadog import statsd
+import traceback
 
 from tonal import Tonal, mapping
 
-API_KEY = "ADD_PI_KEY_HERE"
-GEO = "40.712784,-74.005941"
-call = "https://api.forecast.io/forecast/{0}/{1}"
 
 output = mido.open_output()
 tonal = Tonal()
 mid_range = tonal.create_sorted_midi("HarmonicMajor", "C")
-weather = call.format(API_KEY, GEO)
 start = time.time()
 max_time = 100
 values = dict()
@@ -31,9 +28,10 @@ chans = dict(
 
 def get_info():
     hourly = []
-    r = requests.get(weather)
-    for i in range(len(r.json()["hourly"]["data"])):
-        hourly.append(r.json()["hourly"]["data"][i])
+    f = open("weather.json",)
+    r = json.load(f)
+    for i in range(len(r["hourly"]["data"])):
+        hourly.append(r["hourly"]["data"][i])
     return hourly
 
 
@@ -55,16 +53,21 @@ while True:
     data = get_info()
     for item in data:
         parse(item)
-        for key, value in values.iteritems():
+        print("values: {}".format(values))
+        for key, value in values.items():
             chan = chans.get(key)
+            print("value: {}".format(value))
+            print("chan: {}".format(chan))
+            note = mapping(value, mid_range)
+            print("note: {}".format(note))
             try:
                 output.send(mido.Message(
                     'note_on',
                     note=mapping(value, mid_range),
                     velocity=50,
                     channel=chan))
-            except Exception as e:
-                print("Error: {}".format(e.message))
+            except Exception:
+                traceback.print_exc()
             time.sleep(1)
             print(key, value, "note on", chan)
             statsd.gauge(key, value)

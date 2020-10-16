@@ -108,6 +108,6 @@ def mapping(value, midi):
         return mapping(int(value * 10), midi)
     for item in midi:
         if item == value:
-            return value
+            return int(value)
         if item > value:
-            return item
+            return int(item)
