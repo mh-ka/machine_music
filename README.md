@@ -4,7 +4,7 @@
 * Since the API is closed for new accounts I removed the request part and added a sample json file to be read by the code in weather_to_midi_map.py
 * I updated the package versions and used pipenv as package manager.
 * The project uses the package rtmidi. Because of compiling errors I could not get the package compiling running on a Windows machine. On a Raspberry Pi it worked quite smooth but LMMS is not available on ARM architecture.
-* Under Linux I tested the weather_to_midi_map.py example and connected it to LMMS. It worked although it seems like the tones are constantly playing (maybe a configuration problem of LMMS).
+* Under Linux I tested the weather_to_midi_map.py example and connected it to LMMS. It worked although it seems like the tones are constantly playing (maybe works like expected or it is a configuration problem in LMMS).
 
 # Getting Started
 
